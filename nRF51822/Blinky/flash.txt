@@ -1,0 +1,8 @@
+openocd -d3 -f ../openocd.cfg
+telnet 127.0.0.1 4444
+reset halt 
+nrf51 mass_erase
+##flash banks
+halt
+program ~/nordic/Blinky/_build/Blinky.hex verify
+reset
