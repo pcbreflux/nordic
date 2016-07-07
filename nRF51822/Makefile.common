@@ -6,14 +6,11 @@ BIN=$(OUTPUT_FILENAME).bin
 HEX=$(OUTPUT_FILENAME).hex 
 OUT=$(OUTPUT_FILENAME).out                  
 
-GNU_INSTALL_ROOT=$(HOME)/stm32/gcc-arm-none-eabi-4_9-2015q1
+GNU_INSTALL_ROOT=$(HOME)/nordic/gcc-arm-none-eabi-5_3-2016q1
 GNU_PREFIX=arm-none-eabi
 
-export OUTPUT_FILENAME
-MAKEFILE_NAME := $(MAKEFILE_LIST)
-MAKEFILE_DIR := $(dir $(MAKEFILE_NAME) ) 
-
-SDK_PATH=$(HOME)/nordic/nRF51_SDK_10.0.0_dc26b5e
+SDK_PATH=$(HOME)/nordic/nRF5_SDK_11.0.0
+#SDK_PATH=$(HOME)/nordic/nRF51_SDK_10.0.0
 TEMPLATE_PATH=$(SDK_PATH)/components/toolchain/gcc
 
 MK := mkdir
@@ -38,11 +35,10 @@ SIZE            := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-size'
 GDB             := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-gdb'
 
 OBJECT_DIRECTORY = _build
-LISTING_DIRECTORY = $(OBJECT_DIRECTORY)
 OUTPUT_BINARY_DIRECTORY = $(OBJECT_DIRECTORY)
 
 # Sorting removes duplicates
-BUILD_DIRECTORIES := $(sort $(OBJECT_DIRECTORY) $(OUTPUT_BINARY_DIRECTORY) $(LISTING_DIRECTORY) )
+BUILD_DIRECTORIES := $(sort $(OBJECT_DIRECTORY))
 
 #assembly files common to all targets
 OBJS += gcc_startup_nrf51.o
@@ -71,6 +67,7 @@ INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_dis
 INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_bas
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/hal
 INC_PATHS += -I$(SDK_PATH)/components/toolchain/gcc
+INC_PATHS += -I$(SDK_PATH)/components/toolchain/CMSIS/Include
 INC_PATHS += -I$(SDK_PATH)/components/toolchain
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/nrf_soc_nosd
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/common
@@ -86,9 +83,9 @@ INC_PATHS += -I$(SDK_PATH)/components/drivers_ext/segger_rtt
 CFLAGS += -DNRF51
 CFLAGS += -DBOARD_BLE_SW
 CFLAGS += -mcpu=cortex-m0
-CFLAGS+= $(INC_PATHS) -I.
+CFLAGS+= $(INC_PATHS)
 CFLAGS += -mthumb -mabi=aapcs --std=gnu99
-CFLAGS += -Wall -Werror -O3
+CFLAGS += -Wall -Werror
 CFLAGS += -mfloat-abi=soft
 # keep every function in separate section. This will allow linker to dump unused functions
 CFLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
@@ -96,8 +93,7 @@ CFLAGS += -fno-builtin --short-enums
 
 
 # keep every function in separate section. This will allow linker to dump unused functions
-
-LDFLAGS += -Xlinker -Map=$(LISTING_DIRECTORY)/$(OUTPUT_FILENAME).map
+LDFLAGS += -Xlinker -Map=$(OBJECT_DIRECTORY)/$(OUTPUT_FILENAME).map
 LDFLAGS += -mthumb -mabi=aapcs -L$(TEMPLATE_PATH) -T$(LDSCRIPT)
 LDFLAGS += -mcpu=cortex-m0
 # let linker to dump unused sections
@@ -109,13 +105,14 @@ LDFLAGS += --specs=nano.specs -lc -lnosys
 ASMFLAGS += -x assembler-with-cpp
 ASMFLAGS += -DNRF51
 ASMFLAGS += -DBOARD_BLE_SW
+ASMFLAGS += -D__STACK_SIZE=2048
+ASMFLAGS += -D__HEAP_SIZE=512
 
 #default target - first one defined
 default: clean $(OUTPUT_BINARY_DIRECTORY)/$(BIN) $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
 
 #building all targets
-all: clean
-	$(OUTPUT_BINARY_DIRECTORY)/$(BIN) $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
+all: clean $(OUTPUT_BINARY_DIRECTORY)/$(BIN) $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
 
 #target for printing all targets
 help:
@@ -176,14 +173,12 @@ $(OUTPUT_BINARY_DIRECTORY)/$(OUT) : $(BUILD_DIRECTORIES) $(OBJECTS)
 
 $(OBJECT_DIRECTORY)/%.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
-	$(CC) -MM $(CFLAGS) $< > $(OBJECT_DIRECTORY)/$*.d
 
 $(OBJECT_DIRECTORY)/%.o: %.s
 	$(CC) -c $(ASMFLAGS) -c $< -o $@
 
 $(OBJECT_DIRECTORY)/%.o: %.cpp
 	$(CPP) -c $(CFLAGS) $< -o $@
-	$(CPP) -MM $(CFLAGS) $< > $(OBJECT_DIRECTORY)/$*.d
 
 clean:
 	$(RM) $(BUILD_DIRECTORIES)
@@ -191,5 +186,3 @@ clean:
 cleanobj:
 	$(RM) $(BUILD_DIRECTORIES)/*.o
 
-debug: $(ELF)
-	$(GDB) $(ELF)

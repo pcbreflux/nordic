@@ -4,5 +4,5 @@ reset halt
 nrf51 mass_erase
 ##flash banks
 halt
-program /home/pcbreflux/nordic/nordic.git/nRF51822/Blinky/_build/Blinky.hex verify
+program /home/pcbreflux/nordic/nordic.git/nRF51822/blinky/_build/blinky.hex verify
 reset
