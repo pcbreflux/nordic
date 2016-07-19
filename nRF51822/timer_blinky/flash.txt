@@ -1,0 +1,9 @@
+openocd -d3 -f ../openocd.cfg
+telnet 127.0.0.1 4444
+reset halt 
+nrf51 mass_erase
+##flash banks
+halt
+program /home/pcbreflux/nordic/nordic.git/nRF51822/timer_blinky/_build/timer_blinky.hex verify
+reset
+
