@@ -52,6 +52,7 @@ INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/clock
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/timer
 INC_PATHS += -I$(SDK_PATH)/components/libraries/util
 INC_PATHS += -I$(SDK_PATH)/components/ble/device_manager
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/rtc
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/uart
 INC_PATHS += -I$(SDK_PATH)/components/ble/common
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/pstorage
@@ -130,6 +131,7 @@ vpath %.c $(SDK_PATH)/components/drivers_nrf/timer
 vpath %.c $(SDK_PATH)/components/libraries/util
 vpath %.c $(SDK_PATH)/components/ble/device_manager
 vpath %.c $(SDK_PATH)/components/drivers_nrf/uart
+vpath %.c $(SDK_PATH)/components/drivers_nrf/rtc
 vpath %.c $(SDK_PATH)/components/ble/common
 vpath %.c $(SDK_PATH)/components/drivers_nrf/pstorage
 vpath %.c $(SDK_PATH)/components/libraries/uart

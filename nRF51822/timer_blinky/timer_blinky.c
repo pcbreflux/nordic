@@ -28,7 +28,7 @@ const nrf_drv_timer_t mytimer1 = NRF_DRV_TIMER_INSTANCE(1); /**< Declaring an in
 const uint32_t led_pin1 = 19;
 static uint32_t tick_pos = 0;
 
-/** @brief Function initialization and configuration of RTC driver instance.
+/** @brief Function initialization and configuration of GPIO.
  */
 static void gpio_config(void) {
     // Configure LED-pin as outputs and clear.
@@ -36,6 +36,8 @@ static void gpio_config(void) {
     nrf_gpio_pin_clear(led_pin1);
 }
 
+/** @brief Function for timer events.
+ */
 static void timer1_handler(nrf_timer_event_t event_type, void* p_context) {
 //    uint32_t err_code;
 
@@ -51,7 +53,7 @@ static void timer1_handler(nrf_timer_event_t event_type, void* p_context) {
     }
 }
 
-/** @brief Function starting the internal LFCLK XTAL oscillator.
+/** @brief Function starting the HFCLK oscillator.
  */
 static void hfclk_config(void) {
     ret_code_t err_code = nrf_drv_clock_init();
@@ -60,10 +62,11 @@ static void hfclk_config(void) {
     nrf_drv_clock_hfclk_request(NULL);
 }
 
-/** @brief Function initialization and configuration of RTC driver instance.
+/** @brief Function initialization and configuration of timer driver instance.
  */
 static void timer_config(void) {
     uint32_t time_in_ms = 1000;   //Time(in miliseconds) between consecutive compare events.
+                                  // see 
     uint32_t time2ticks;
     uint32_t err_code;
 
@@ -72,6 +75,12 @@ static void timer_config(void) {
     
     time2ticks = nrf_drv_timer_ms_to_ticks(&mytimer1, time_in_ms);
     
+    /*
+        |----|                         |----|
+        |    |                         |    |
+	|    |______________________...|    |____...
+          1s             9s              1s
+    */
     nrf_drv_timer_extended_compare(&mytimer1, NRF_TIMER_CC_CHANNEL0, time2ticks, NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK, true);
     
     nrf_drv_timer_enable(&mytimer1);
