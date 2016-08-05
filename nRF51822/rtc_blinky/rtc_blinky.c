@@ -71,7 +71,7 @@ static void rtc_config(void) {
     err_code = nrf_drv_rtc_init(&rtc1, NULL, rtc1_handler);
     APP_ERROR_CHECK(err_code);
 
-    //Enable tick event & interrupt
+    //Disable tick event & interrupt
     nrf_drv_rtc_tick_enable(&rtc1,false);
 
     /*
@@ -90,7 +90,7 @@ static void rtc_config(void) {
     APP_ERROR_CHECK(err_code);
 
     //Set compare channel 2 to trigger interrupt after RTC1_CC_VALUE*125ms*9
-    err_code = nrf_drv_rtc_cc_set(&rtc1,2,RTC1_CC_VALUE*8,true);
+    err_code = nrf_drv_rtc_cc_set(&rtc1,2,RTC1_CC_VALUE*10,true);
     APP_ERROR_CHECK(err_code);
 
     //Power on RTC instance

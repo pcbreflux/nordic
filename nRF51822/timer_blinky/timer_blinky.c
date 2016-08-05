@@ -47,7 +47,7 @@ static void timer1_handler(nrf_timer_event_t event_type, void* p_context) {
         	nrf_gpio_pin_set(led_pin1);
         } else if (tick_pos==2) {
         	nrf_gpio_pin_clear(led_pin1);
-        } else if (tick_pos==11) {
+        } else if (tick_pos==10) {
         	tick_pos=0;
         }
     }
@@ -76,10 +76,10 @@ static void timer_config(void) {
     time2ticks = nrf_drv_timer_ms_to_ticks(&mytimer1, time_in_ms);
     
     /*
-        |----|                         |----|
-        |    |                         |    |
-	|    |______________________...|    |____...
-          1s             9s              1s
+            |----|                              |----|
+            |    |                              |    |
+	____|    |______________________..._____|    |____...
+         1s   1s             8s              1s   1s
     */
     nrf_drv_timer_extended_compare(&mytimer1, NRF_TIMER_CC_CHANNEL0, time2ticks, NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK, true);
     

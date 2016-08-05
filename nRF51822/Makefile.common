@@ -9,8 +9,8 @@ OUT=$(OUTPUT_FILENAME).out
 GNU_INSTALL_ROOT=$(HOME)/nordic/gcc-arm-none-eabi-5_3-2016q1
 GNU_PREFIX=arm-none-eabi
 
-SDK_PATH=$(HOME)/nordic/nRF5_SDK_11.0.0
-#SDK_PATH=$(HOME)/nordic/nRF51_SDK_10.0.0
+#SDK_PATH=$(HOME)/nordic/nRF5_SDK_11.0.0
+SDK_PATH=$(HOME)/nordic/nRF51_SDK_10.0.0
 TEMPLATE_PATH=$(SDK_PATH)/components/toolchain/gcc
 
 MK := mkdir
