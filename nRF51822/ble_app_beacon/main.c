@@ -12,7 +12,7 @@
 
 /** @file
  *
- * @defgroup ble_sdk_app_beacon_main main.c
+ * @defgroup ble_sdk_app_beacon_main main.c (changed by pcbreflux)
  * @{
  * @ingroup ble_sdk_app_beacon
  * @brief Beacon Transmitter Sample Application main file.
