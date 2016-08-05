@@ -10,7 +10,7 @@
  *
  */
 
-/** @file blinky.c
+/** @file blinky.c (changed by pcbreflux)
  * @brief Blinky Example Application main file.
  *
  */
