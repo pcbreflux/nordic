@@ -59,11 +59,12 @@
 
 #define BUTTONS_MASK   0x001E0000
 
-#define RX_PIN_NUMBER  11
-#define TX_PIN_NUMBER  9
-#define CTS_PIN_NUMBER 10
-#define RTS_PIN_NUMBER 8
-#define HWFC           true
+#define RX_PIN_NUMBER  11  // -> CPTX
+#define TX_PIN_NUMBER  9   // -> CPRX
+#define CTS_PIN_NUMBER 10  // -> CPRTS
+#define RTS_PIN_NUMBER 8   // -> CPCTS
+#define HWFC           false
+#define UART0_CONFIG_BAUDRATE     UART_BAUDRATE_BAUDRATE_Baud115200
 
 #define SPIS_MISO_PIN  28    // SPI MISO signal. 
 #define SPIS_CSN_PIN   12    // SPI CSN signal. 
@@ -83,10 +84,10 @@
 // serialization APPLICATION board
 #define SER_CONN_CHIP_RESET_PIN     30    // Pin used to reset connectivity chip
 
-#define SER_APP_RX_PIN              12    // UART RX pin number.
-#define SER_APP_TX_PIN              13    // UART TX pin number.
-#define SER_APP_CTS_PIN             15    // UART Clear To Send pin number.
-#define SER_APP_RTS_PIN             14    // UART Request To Send pin number.
+#define SER_APP_RX_PIN              RX_PIN_NUMBER    // UART RX pin number.
+#define SER_APP_TX_PIN              TX_PIN_NUMBER    // UART TX pin number.
+#define SER_APP_CTS_PIN             CTS_PIN_NUMBER    // UART Clear To Send pin number.
+#define SER_APP_RTS_PIN             RTS_PIN_NUMBER    // UART Request To Send pin number.
 
 #define SER_APP_SPIM0_SCK_PIN       29    // SPI clock GPIO pin number.
 #define SER_APP_SPIM0_MOSI_PIN      25    // SPI Master Out Slave In GPIO pin number
@@ -96,10 +97,10 @@
 #define SER_APP_SPIM0_REQ_PIN       13    // SPI REQUEST GPIO pin number
 
 // serialization CONNECTIVITY board
-#define SER_CON_RX_PIN              13    // UART RX pin number.
-#define SER_CON_TX_PIN              12    // UART TX pin number.
-#define SER_CON_CTS_PIN             14    // UART Clear To Send pin number. Not used if HWFC is set to false.
-#define SER_CON_RTS_PIN             15    // UART Request To Send pin number. Not used if HWFC is set to false.
+#define SER_CON_RX_PIN              RX_PIN_NUMBER   // UART RX pin number.
+#define SER_CON_TX_PIN              TX_PIN_NUMBER   // UART TX pin number.
+#define SER_CON_CTS_PIN             CTS_PIN_NUMBER    // UART Clear To Send pin number. Not used if HWFC is set to false.
+#define SER_CON_RTS_PIN             RTS_PIN_NUMBER    // UART Request To Send pin number. Not used if HWFC is set to false.
 
 
 #define SER_CON_SPIS_SCK_PIN        29    // SPI SCK signal.

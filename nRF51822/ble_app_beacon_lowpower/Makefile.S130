@@ -1,0 +1,36 @@
+TEMPLATEROOT = ..
+
+# compilation flags for gdb
+
+CFLAGS  += -O0 -g
+CFLAGS  = -DNRF_LOG_USES_UART=1
+CFLAGS += -DSOFTDEVICE_PRESENT
+CFLAGS += -DS130
+CFLAGS += -DBLE_STACK_SUPPORT_REQD
+CFLAGS += -DSWI_DISABLE0
+CFLAGS += -DBOARD_BLE_TEST
+ASFLAGS += -g 
+ASMFLAGS += -DNRF_LOG_USES_UART=1
+ASMFLAGS += -DSOFTDEVICE_PRESENT
+ASMFLAGS += -DS130
+ASMFLAGS += -DBLE_STACK_SUPPORT_REQD
+ASMFLAGS += -DSWI_DISABLE0
+ASMFLAGS += -DBOARD_BLE_TEST
+#LDLIBS += -lc -lgcc -lrdimon
+
+LDSCRIPT = $(TEMPLATEROOT)/s130_nrf51822_QFAA.ld
+INC_PATHS += -I$(SDK_PATH)/components/softdevice/s130/headers
+
+vpath %.c $(SDK_PATH)/components/softdevice/s130/headers
+
+# object files
+
+OBJS =  app_button.o app_error.o app_fifo.o app_timer.o app_util_platform.o nrf_assert.o nrf_log.o
+OBJS += retarget.o app_uart_fifo.o 
+OBJS += nrf_delay.o nrf_drv_common.o nrf_drv_gpiote.o nrf_drv_uart.o
+OBJS += bsp.o main.o
+OBJS += ble_advdata.o ble_conn_params.o ble_srv_common.o 
+OBJS += system_nrf51.o softdevice_handler.o
+# include common make file
+
+include $(TEMPLATEROOT)/Makefile.common

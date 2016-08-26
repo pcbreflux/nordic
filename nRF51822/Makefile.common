@@ -9,8 +9,8 @@ OUT=$(OUTPUT_FILENAME).out
 GNU_INSTALL_ROOT=$(HOME)/nordic/gcc-arm-none-eabi-5_3-2016q1
 GNU_PREFIX=arm-none-eabi
 
-#SDK_PATH=$(HOME)/nordic/nRF5_SDK_11.0.0
-SDK_PATH=$(HOME)/nordic/nRF51_SDK_10.0.0
+SDK_PATH=$(HOME)/nordic/nRF5_SDK_11.0.0
+#SDK_PATH=$(HOME)/nordic/nRF51_SDK_10.0.0
 TEMPLATE_PATH=$(SDK_PATH)/components/toolchain/gcc
 
 MK := mkdir
@@ -49,6 +49,7 @@ OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(OBJS) )
 INC_PATHS += -I$(SDK_PATH)/components/libraries/fifo
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/delay
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/clock
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/ppi
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/timer
 INC_PATHS += -I$(SDK_PATH)/components/libraries/util
 INC_PATHS += -I$(SDK_PATH)/components/ble/device_manager
@@ -79,6 +80,7 @@ INC_PATHS += -I$(SDK_PATH)/components/ble/ble_advertising
 INC_PATHS += -I$(SDK_PATH)/components/libraries/trace
 INC_PATHS += -I$(SDK_PATH)/components/softdevice/common/softdevice_handler
 INC_PATHS += -I$(SDK_PATH)/components/drivers_ext/segger_rtt
+INC_PATHS += -I$(SDK_PATH)/examples/bsp
 
 #flags common to all targets
 CFLAGS += -DNRF51
@@ -127,6 +129,7 @@ vpath %.s $(TEMPLATEROOT)
 vpath %.c $(SDK_PATH)/components/libraries/fifo
 vpath %.c $(SDK_PATH)/components/drivers_nrf/delay
 vpath %.c $(SDK_PATH)/components/drivers_nrf/clock
+vpath %.c $(SDK_PATH)/components/drivers_nrf/ppi
 vpath %.c $(SDK_PATH)/components/drivers_nrf/timer
 vpath %.c $(SDK_PATH)/components/libraries/util
 vpath %.c $(SDK_PATH)/components/ble/device_manager
@@ -155,6 +158,7 @@ vpath %.c $(SDK_PATH)/components/ble/ble_advertising
 vpath %.c $(SDK_PATH)/components/libraries/trace
 vpath %.c $(SDK_PATH)/components/softdevice/common/softdevice_handler
 vpath %.c $(SDK_PATH)/components/drivers_ext/segger_rtt
+vpath %.c $(SDK_PATH)/examples/bsp
 
 ## Create build directories
 $(BUILD_DIRECTORIES):

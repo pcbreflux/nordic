@@ -1,0 +1,10 @@
+openocd -d3 -f ../openocd.cfg
+telnet 127.0.0.1 4444
+reset halt 
+nrf51 mass_erase
+program /home/pcbreflux/nordic/s130_nrf51_1.0.0_API/s130_nrf51_1.0.0_softdevice.hex verify
+reset halt 
+program /home/pcbreflux/nordic/nordic.git/nRF51822/ble_app_beacon/_build/ble_app_beacon.hex verify
+reset
+
+
