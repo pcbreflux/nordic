@@ -1,0 +1,2 @@
+openocd -d3 -f ../openocd.cfg
+./flash_nrf.php /home/pcbreflux/nordic/nordic.git/nRF51822/qdec_rotary_encoder/_build/qdec_rotary_encoder.hex
