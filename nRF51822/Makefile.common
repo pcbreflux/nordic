@@ -9,7 +9,8 @@ OUT=$(OUTPUT_FILENAME).out
 GNU_INSTALL_ROOT=$(HOME)/nordic/gcc-arm-none-eabi-5_3-2016q1
 GNU_PREFIX=arm-none-eabi
 
-SDK_PATH=$(HOME)/nordic/nRF5_SDK_11.0.0
+SDK_PATH=$(HOME)/nordic/nRF5_SDK_12.0.0
+#SDK_PATH=$(HOME)/nordic/nRF5_SDK_11.0.0
 #SDK_PATH=$(HOME)/nordic/nRF51_SDK_10.0.0
 TEMPLATE_PATH=$(SDK_PATH)/components/toolchain/gcc
 
@@ -70,7 +71,10 @@ INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_dis
 INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_bas
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/hal
 INC_PATHS += -I$(SDK_PATH)/components/toolchain/gcc
+# SDK <= 11
 INC_PATHS += -I$(SDK_PATH)/components/toolchain/CMSIS/Include
+# SDK = 12 
+INC_PATHS += -I$(SDK_PATH)/components/toolchain/cmsis/include
 INC_PATHS += -I$(SDK_PATH)/components/toolchain
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/nrf_soc_nosd
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/common
@@ -126,7 +130,10 @@ help:
 #includes common to all targets
 
 vpath %.c $(TEMPLATEROOT)
+# SDK <= 11
 vpath %.s $(TEMPLATEROOT)
+# SDK = 12 
+vpath %.S $(TEMPLATEROOT)
 vpath %.c $(SDK_PATH)/components/libraries/fifo
 vpath %.c $(SDK_PATH)/components/drivers_nrf/delay
 vpath %.c $(SDK_PATH)/components/drivers_nrf/clock
@@ -151,7 +158,10 @@ vpath %.c $(SDK_PATH)/components/ble/ble_services/ble_dis
 vpath %.c $(SDK_PATH)/components/ble/ble_services/ble_bas
 vpath %.c $(SDK_PATH)/components/drivers_nrf/hal
 vpath %.c $(SDK_PATH)/components/toolchain/gcc
+# SDK <= 11
 vpath %.s $(SDK_PATH)/components/toolchain/gcc
+# SDK = 12 
+vpath %.S $(SDK_PATH)/components/toolchain/gcc
 vpath %.c $(SDK_PATH)/components/toolchain
 vpath %.c $(SDK_PATH)/components/drivers_nrf/nrf_soc_nosd
 vpath %.c $(SDK_PATH)/components/drivers_nrf/common
@@ -183,6 +193,9 @@ $(OBJECT_DIRECTORY)/%.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
 $(OBJECT_DIRECTORY)/%.o: %.s
+	$(CC) -c $(ASMFLAGS) -c $< -o $@
+
+$(OBJECT_DIRECTORY)/%.o: %.S
 	$(CC) -c $(ASMFLAGS) -c $< -o $@
 
 $(OBJECT_DIRECTORY)/%.o: %.cpp
