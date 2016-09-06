@@ -63,6 +63,8 @@ INC_PATHS += -I$(SDK_PATH)/components/libraries/uart
 INC_PATHS += -I$(SDK_PATH)/components/device
 INC_PATHS += -I$(SDK_PATH)/components/libraries/button
 INC_PATHS += -I$(SDK_PATH)/components/libraries/timer
+INC_PATHS += -I$(SDK_PATH)/components/libraries/log
+INC_PATHS += -I$(SDK_PATH)/components/libraries/log/src
 INC_PATHS += -I$(SDK_PATH)/components/libraries/sensorsim
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/gpiote
 INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_nus
@@ -150,6 +152,8 @@ vpath %.c $(SDK_PATH)/components/libraries/uart
 vpath %.c $(SDK_PATH)/components/device
 vpath %.c $(SDK_PATH)/components/libraries/button
 vpath %.c $(SDK_PATH)/components/libraries/timer
+vpath %.c $(SDK_PATH)/components/libraries/log
+vpath %.c $(SDK_PATH)/components/libraries/log/src
 vpath %.c $(SDK_PATH)/components/libraries/sensorsim
 vpath %.c $(SDK_PATH)/components/drivers_nrf/gpiote
 vpath %.c $(SDK_PATH)/components/ble/ble_services/ble_nus
