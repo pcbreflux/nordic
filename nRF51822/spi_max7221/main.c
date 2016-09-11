@@ -28,8 +28,9 @@
 #include "nrf_drv_spi.h"
 #include "app_uart.h"
 #include "app_error.h"
-//#include "uart.h"
 #include "max7221.h"
+
+#define MAX7221_DEVCNT 4
 
 // see nrf_drv_config.h for defining TIMER1
 // Softdevice S110, S120, S130 blocks TIMER0
@@ -41,12 +42,9 @@ const uint32_t led_pin1 = 19;
  */
 static void gpio_config(void) {
 	// Configure LED-pin as outputs and clear.
-        NRF_LOG_INFO("nrf_gpio_cfg_output %d\n\r",led_pin1);
+    NRF_LOG_INFO("nrf_gpio_cfg_output %d\n\r",led_pin1);
 	nrf_gpio_cfg_output(led_pin1);
 	nrf_gpio_pin_clear(led_pin1);
-        //NRF_LOG_INFO("nrf_gpio_cfg_output %d\n\r",MAX7221_CS_PIN);
-	//nrf_gpio_cfg_output(MAX7221_CS_PIN);
-	//nrf_gpio_pin_set(MAX7221_CS_PIN); // real active low !
 }
 
 /** @brief Function initialization and configuration of RTC driver instance.
@@ -73,61 +71,114 @@ static void spi_config(void) {
 }
 
 void writeNRF51822(uint32_t delay_ms) {
-	max7221_writechar(&my_spi_0,'n');
+	max7221_writechar(&my_spi_0,0,'n');
 	nrf_delay_ms(delay_ms);
-	max7221_writechar(&my_spi_0,'R');
+	max7221_writechar(&my_spi_0,1,'n');
+	max7221_writechar(&my_spi_0,0,'R');
 	nrf_delay_ms(delay_ms);
-	max7221_writechar(&my_spi_0,'F');
+	max7221_writechar(&my_spi_0,2,'n');
+	max7221_writechar(&my_spi_0,1,'R');
+	max7221_writechar(&my_spi_0,0,'F');
 	nrf_delay_ms(delay_ms);
-	max7221_writechar(&my_spi_0,'5');
+	max7221_writechar(&my_spi_0,3,'n');
+	max7221_writechar(&my_spi_0,2,'R');
+	max7221_writechar(&my_spi_0,1,'F');
+	max7221_writechar(&my_spi_0,0,'5');
 	nrf_delay_ms(delay_ms);
-	max7221_writechar(&my_spi_0,'1');
+	max7221_writechar(&my_spi_0,3,'R');
+	max7221_writechar(&my_spi_0,2,'F');
+	max7221_writechar(&my_spi_0,1,'5');
+	max7221_writechar(&my_spi_0,0,'1');
 	nrf_delay_ms(delay_ms);
-	max7221_writechar(&my_spi_0,'8');
+	max7221_writechar(&my_spi_0,3,'F');
+	max7221_writechar(&my_spi_0,2,'5');
+	max7221_writechar(&my_spi_0,1,'1');
+	max7221_writechar(&my_spi_0,0,'8');
 	nrf_delay_ms(delay_ms);
-	max7221_writechar(&my_spi_0,'2');
+	max7221_writechar(&my_spi_0,3,'5');
+	max7221_writechar(&my_spi_0,2,'1');
+	max7221_writechar(&my_spi_0,1,'8');
+	max7221_writechar(&my_spi_0,0,'2');
 	nrf_delay_ms(delay_ms);
-	max7221_writechar(&my_spi_0,'2');
+	max7221_writechar(&my_spi_0,3,'1');
+	max7221_writechar(&my_spi_0,2,'8');
+	max7221_writechar(&my_spi_0,1,'2');
+	max7221_writechar(&my_spi_0,0,'2');
+	nrf_delay_ms(delay_ms);
+	max7221_writechar(&my_spi_0,3,'8');
+	max7221_writechar(&my_spi_0,2,'2');
+	max7221_writechar(&my_spi_0,1,'2');
+	max7221_writechar(&my_spi_0,0,' ');
+	nrf_delay_ms(delay_ms);
+	max7221_writechar(&my_spi_0,3,'2');
+	max7221_writechar(&my_spi_0,2,'2');
+	max7221_writechar(&my_spi_0,1,' ');
+	max7221_writechar(&my_spi_0,0,' ');
+	nrf_delay_ms(delay_ms);
+	max7221_writechar(&my_spi_0,3,'2');
+	max7221_writechar(&my_spi_0,2,' ');
+	max7221_writechar(&my_spi_0,1,' ');
+	max7221_writechar(&my_spi_0,0,' ');
+	nrf_delay_ms(delay_ms);
+	max7221_writechar(&my_spi_0,3,' ');
+	max7221_writechar(&my_spi_0,2,' ');
+	max7221_writechar(&my_spi_0,1,' ');
+	max7221_writechar(&my_spi_0,0,' ');
 	nrf_delay_ms(delay_ms);
 }
 
 void writeNumbers(uint32_t delay_ms) {
     uint8_t numpos=0;
-    for(numpos=0;numpos<10;numpos++) {
-	max7221_writenumber(&my_spi_0,numpos);
-	nrf_delay_ms(delay_ms);
+    uint8_t devpos=0;
+    for(devpos=0;devpos<MAX7221_DEVCNT;devpos++) {
+        max7221_writenumber(&my_spi_0,devpos,0);
+    }
+    for(devpos=0;devpos<MAX7221_DEVCNT;devpos++) {
+		for(numpos=0;numpos<10;numpos++) {
+			max7221_writenumber(&my_spi_0,devpos,numpos);
+			nrf_delay_ms(delay_ms);
+		}
+		max7221_writenumber(&my_spi_0,devpos,0);
     }
 }
 
 void writeChars(uint32_t delay_ms) {
     uint8_t charpos=0;
-    for(charpos=1;charpos<255;charpos++) {
-	max7221_writechar(&my_spi_0,charpos);
-	nrf_delay_ms(delay_ms);
+    uint8_t devpos=0;
+    for(devpos=0;devpos<MAX7221_DEVCNT;devpos++) {
+		for(charpos=1;charpos<255;charpos++) {
+			max7221_writechar(&my_spi_0,devpos,charpos);
+			NRF_LOG_INFO("spi writeChars %d=%c\n\r",devpos,charpos);
+			NRF_LOG_FLUSH();
+			nrf_delay_ms(delay_ms);
+		}
     }
 }
 
 void writeDot(uint32_t delay_ms) {
     uint8_t bitpos=0;
     uint8_t value=0;
+    uint8_t devpos=0;
 
-    max7221_clear(&my_spi_0);
-    for(value=0;value<8;value++) {
-        for(bitpos=0;bitpos<8;bitpos++) {
-	    max7221_set(&my_spi_0,bitpos,1<<value);
-	    nrf_delay_ms(delay_ms);
-	    max7221_set(&my_spi_0,bitpos,0);
-	}
-	max7221_clear(&my_spi_0);
-    }
-    max7221_clear(&my_spi_0);
-    for(bitpos=0;bitpos<8;bitpos++) {
-        for(value=0;value<8;value++) {
-	    max7221_set(&my_spi_0,bitpos,1<<value);
-	    nrf_delay_ms(delay_ms);
-	}
-	max7221_set(&my_spi_0,bitpos,0);
-	max7221_clear(&my_spi_0);
+    for(devpos=0;devpos<MAX7221_DEVCNT;devpos++) {
+		max7221_clear(&my_spi_0,devpos);
+		for(value=0;value<8;value++) {
+			for(bitpos=0;bitpos<8;bitpos++) {
+				max7221_set(&my_spi_0,devpos,bitpos,1<<value);
+				nrf_delay_ms(delay_ms);
+				max7221_set(&my_spi_0,devpos,bitpos,0);
+			}
+			max7221_clear(&my_spi_0,devpos);
+		}
+		max7221_clear(&my_spi_0,devpos);
+		for(bitpos=0;bitpos<8;bitpos++) {
+			for(value=0;value<8;value++) {
+				max7221_set(&my_spi_0,devpos,bitpos,1<<value);
+				nrf_delay_ms(delay_ms);
+			}
+			max7221_set(&my_spi_0,devpos,bitpos,0);
+			max7221_clear(&my_spi_0,devpos);
+		}
     }
 }
 
@@ -146,18 +197,19 @@ int main(void) {
     gpio_config(); // Configure GPIO pins.
     spi_config();
 
-    max7221_init(&my_spi_0);
     // loop
     while (true) {
+        max7221_init(&my_spi_0,MAX7221_DEVCNT);
+
         //nrf_gpio_pin_toggle(led_pin1);
         //nrf_gpio_pin_toggle(MAX7221_CS_PIN);
         //writeDot(10);
-        //writeNRF51822(500);
-	writeNumbers(200);
-	// writeChars(100);
-	pos++;
-	NRF_LOG_INFO("tick (%u)\n\r",pos);
-	NRF_LOG_FLUSH();
+        writeNRF51822(200);
+		writeNumbers(100);
+		//writeChars(100);
+		pos++;
+		NRF_LOG_INFO("tick (%u)\n\r",pos);
+		NRF_LOG_FLUSH();
        
 /*
             // Enter System ON sleep mode

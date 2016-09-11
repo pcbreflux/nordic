@@ -24,11 +24,10 @@
 
 #define MAX7221_CS_PIN 28                                /**< SPI Slave Select GPIO pin number. */
 
-#define MAX7221_DEFAULT_CONFIG {                 \
-    .mosi_pin     = SPIM0_MOSI_PIN,              \
-    .sck_pin      = SPIM0_SCK_PIN,               \
-    .cs_pin       = SPIM0_SS_PIN,              \
-    .device_cnt   = 1 \
+#define MAX7221_DEFAULT_CONFIG { \
+    .mosi_pin     = SPIM0_MOSI_PIN, \
+    .sck_pin      = SPIM0_SCK_PIN, \
+    .cs_pin       = SPIM0_SS_PIN \
 }
 
 /**@brief MAX7221 configuration structure.*/
@@ -36,7 +35,6 @@ typedef struct {
     uint32_t               mosi_pin;           /**< Pin number for MOSI output. */
     uint32_t               sck_pin;            /**< Pin number for CLK output. */
     uint32_t               cs_pin;             /**< Pin number for client select/Load output. */
-    uint32_t               device_cnt;         /**< number of daisy-chained devices. */
 } max7221_config_t;
 
 // see MAX7219/MAX7221 Datasheet Table 2. Register Address Map
@@ -60,18 +58,16 @@ enum  	max7221_op_t {
 /**
  * @brief Function for uart_error_handle uart error handling.
  */
-void max7221_init(nrf_drv_spi_t const * const spi_instance);
+void max7221_init(nrf_drv_spi_t const * const spi_instance,uint8_t devnum);
 
-void max7221_set(nrf_drv_spi_t const * const spi_instance,uint8_t pos,uint32_t value);
+void max7221_set(nrf_drv_spi_t const * const spi_instance,uint8_t devnum,uint8_t pos,uint32_t value);
 
-void max7221_clear(nrf_drv_spi_t const * const spi_instance);
+void max7221_clear(nrf_drv_spi_t const * const spi_instance,uint8_t devnum);
 
-void max7221_writenumber(nrf_drv_spi_t const * const spi_instance,uint8_t number);
+void max7221_writenumber(nrf_drv_spi_t const * const spi_instance,uint8_t devnum,uint8_t number);
 
-void max7221_writechar(nrf_drv_spi_t const * const spi_instance,uint8_t ascii);
+void max7221_writechar(nrf_drv_spi_t const * const spi_instance,uint8_t devnum,uint8_t ascii);
 
-void max7221_transbuffer(nrf_drv_spi_t const * const spi_instance,uint8_t code,uint8_t value);
-
-uint32_t max7221_setbuffer(uint8_t *pbuf,uint8_t code,uint8_t value);
+void max7221_transbuffer(nrf_drv_spi_t const * const spi_instance,uint8_t devnum,uint8_t code,uint8_t value);
 
 #endif // MAX7221_H
