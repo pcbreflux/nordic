@@ -13,6 +13,7 @@ SDK_PATH=$(HOME)/nordic/nRF5_SDK_12.0.0
 #SDK_PATH=$(HOME)/nordic/nRF5_SDK_11.0.0
 #SDK_PATH=$(HOME)/nordic/nRF51_SDK_10.0.0
 TEMPLATE_PATH=$(SDK_PATH)/components/toolchain/gcc
+OPENOCDPATH=/usr/local
 
 MK := mkdir
 RM := rm -rf
@@ -34,6 +35,7 @@ OBJDUMP         := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-objdump'
 OBJCOPY         := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-objcopy'
 SIZE            := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-size'
 GDB             := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-gdb'
+OPENOCD         := '$(OPENOCDPATH)/bin/openocd'
 
 OBJECT_DIRECTORY = _build
 OUTPUT_BINARY_DIRECTORY = $(OBJECT_DIRECTORY)
@@ -51,6 +53,8 @@ INC_PATHS += -I$(SDK_PATH)/components/libraries/fifo
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/delay
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/clock
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/ppi
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/spi_master
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/spi_slave
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/timer
 INC_PATHS += -I$(SDK_PATH)/components/libraries/util
 INC_PATHS += -I$(SDK_PATH)/components/ble/device_manager
@@ -140,6 +144,8 @@ vpath %.c $(SDK_PATH)/components/libraries/fifo
 vpath %.c $(SDK_PATH)/components/drivers_nrf/delay
 vpath %.c $(SDK_PATH)/components/drivers_nrf/clock
 vpath %.c $(SDK_PATH)/components/drivers_nrf/ppi
+vpath %.c $(SDK_PATH)/components/drivers_nrf/spi_master
+vpath %.c $(SDK_PATH)/components/drivers_nrf/spi_slave
 vpath %.c $(SDK_PATH)/components/drivers_nrf/timer
 vpath %.c $(SDK_PATH)/components/libraries/util
 vpath %.c $(SDK_PATH)/components/ble/device_manager
@@ -204,6 +210,9 @@ $(OBJECT_DIRECTORY)/%.o: %.S
 
 $(OBJECT_DIRECTORY)/%.o: %.cpp
 	$(CPP) -c $(CFLAGS) $< -o $@
+
+flash: $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
+	$(OPENOCD) -d2 -f $(TEMPLATEROOT)/openocd.cfg -c 'init_reset halt; program $(OUTPUT_BINARY_DIRECTORY)/$(HEX) verify; reset; exit'
 
 clean:
 	$(RM) $(BUILD_DIRECTORIES)
