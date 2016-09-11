@@ -70,6 +70,8 @@ static void spi_config(void) {
 
 }
 
+/** @brief Function output secret message :)
+ */
 void writeNRF51822(uint32_t delay_ms) {
 	max7221_writechar(&my_spi_0,0,'n');
 	nrf_delay_ms(delay_ms);
