@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>. *
  */
 
-/** @file tt229_gpiote.c (changed by pcbreflux)
- * @brief Blinky Example Application main file.
+/** @file main.c (changed by pcbreflux)
+ * @brief SPI Example Application main file.
  *
  */
 #include <stdlib.h>
@@ -30,7 +30,7 @@
 #include "app_error.h"
 #include "max7221.h"
 
-#define MAX7221_DEVCNT 4
+#define MAX7221_DEVCNT 5
 
 // see nrf_drv_config.h for defining TIMER1
 // Softdevice S110, S120, S130 blocks TIMER0
@@ -70,7 +70,7 @@ static void spi_config(void) {
 
 }
 
-/** @brief Function output secret message :)
+/** @brief Function output secret message :) 5x only
  */
 void writeNRF51822(uint32_t delay_ms) {
 	max7221_writechar(&my_spi_0,0,'n');
@@ -87,41 +87,55 @@ void writeNRF51822(uint32_t delay_ms) {
 	max7221_writechar(&my_spi_0,1,'F');
 	max7221_writechar(&my_spi_0,0,'5');
 	nrf_delay_ms(delay_ms);
+	max7221_writechar(&my_spi_0,4,'n');
 	max7221_writechar(&my_spi_0,3,'R');
 	max7221_writechar(&my_spi_0,2,'F');
 	max7221_writechar(&my_spi_0,1,'5');
 	max7221_writechar(&my_spi_0,0,'1');
 	nrf_delay_ms(delay_ms);
+	max7221_writechar(&my_spi_0,4,'R');
 	max7221_writechar(&my_spi_0,3,'F');
 	max7221_writechar(&my_spi_0,2,'5');
 	max7221_writechar(&my_spi_0,1,'1');
 	max7221_writechar(&my_spi_0,0,'8');
 	nrf_delay_ms(delay_ms);
+	max7221_writechar(&my_spi_0,4,'F');
 	max7221_writechar(&my_spi_0,3,'5');
 	max7221_writechar(&my_spi_0,2,'1');
 	max7221_writechar(&my_spi_0,1,'8');
 	max7221_writechar(&my_spi_0,0,'2');
 	nrf_delay_ms(delay_ms);
+	max7221_writechar(&my_spi_0,4,'5');
 	max7221_writechar(&my_spi_0,3,'1');
 	max7221_writechar(&my_spi_0,2,'8');
 	max7221_writechar(&my_spi_0,1,'2');
 	max7221_writechar(&my_spi_0,0,'2');
 	nrf_delay_ms(delay_ms);
+	max7221_writechar(&my_spi_0,4,'1');
 	max7221_writechar(&my_spi_0,3,'8');
 	max7221_writechar(&my_spi_0,2,'2');
 	max7221_writechar(&my_spi_0,1,'2');
 	max7221_writechar(&my_spi_0,0,' ');
 	nrf_delay_ms(delay_ms);
+	max7221_writechar(&my_spi_0,4,'8');
 	max7221_writechar(&my_spi_0,3,'2');
 	max7221_writechar(&my_spi_0,2,'2');
 	max7221_writechar(&my_spi_0,1,' ');
 	max7221_writechar(&my_spi_0,0,' ');
 	nrf_delay_ms(delay_ms);
+	max7221_writechar(&my_spi_0,4,'2');
 	max7221_writechar(&my_spi_0,3,'2');
 	max7221_writechar(&my_spi_0,2,' ');
 	max7221_writechar(&my_spi_0,1,' ');
 	max7221_writechar(&my_spi_0,0,' ');
 	nrf_delay_ms(delay_ms);
+	max7221_writechar(&my_spi_0,4,'2');
+	max7221_writechar(&my_spi_0,3,' ');
+	max7221_writechar(&my_spi_0,2,' ');
+	max7221_writechar(&my_spi_0,1,' ');
+	max7221_writechar(&my_spi_0,0,' ');
+	nrf_delay_ms(delay_ms);
+	max7221_writechar(&my_spi_0,4,' ');
 	max7221_writechar(&my_spi_0,3,' ');
 	max7221_writechar(&my_spi_0,2,' ');
 	max7221_writechar(&my_spi_0,1,' ');
@@ -141,6 +155,21 @@ void writeNumbers(uint32_t delay_ms) {
 			nrf_delay_ms(delay_ms);
 		}
 		max7221_writenumber(&my_spi_0,devpos,0);
+    }
+}
+
+void writeReverseNumbers(uint32_t delay_ms) {
+    uint8_t numpos=0;
+    uint8_t devpos=0;
+    for(devpos=0;devpos<MAX7221_DEVCNT;devpos++) {
+        max7221_writenumber(&my_spi_0,devpos,9);
+    }
+    for(devpos=MAX7221_DEVCNT;devpos>0;devpos--) {
+		for(numpos=0;numpos<10;numpos++) {
+			max7221_writenumber(&my_spi_0,devpos-1,9-numpos);
+			nrf_delay_ms(delay_ms);
+		}
+		max7221_writenumber(&my_spi_0,devpos-1,0);
     }
 }
 
@@ -205,9 +234,13 @@ int main(void) {
 
         //nrf_gpio_pin_toggle(led_pin1);
         //nrf_gpio_pin_toggle(MAX7221_CS_PIN);
-        //writeDot(10);
+        writeNRF51822(200);
+        writeNRF51822(200);
+        writeNRF51822(200);
         writeNRF51822(200);
 		writeNumbers(100);
+        writeReverseNumbers(300);
+        writeDot(10);
 		//writeChars(100);
 		pos++;
 		NRF_LOG_INFO("tick (%u)\n\r",pos);
