@@ -1,0 +1,222 @@
+# name of executable
+
+OUTPUT_FILENAME=$(notdir $(CURDIR))
+ELF=$(OUTPUT_FILENAME).elf                    
+BIN=$(OUTPUT_FILENAME).bin                   
+HEX=$(OUTPUT_FILENAME).hex 
+OUT=$(OUTPUT_FILENAME).out                  
+
+GNU_INSTALL_ROOT=$(HOME)/nordic/gcc-arm-none-eabi-5_3-2016q1
+GNU_PREFIX=arm-none-eabi
+
+SDK_PATH=$(HOME)/nordic/nRF5_SDK_12.0.0
+#SDK_PATH=$(HOME)/nordic/nRF5_SDK_11.0.0
+#SDK_PATH=$(HOME)/nordic/nRF51_SDK_10.0.0
+TEMPLATE_PATH=$(SDK_PATH)/components/toolchain/gcc
+OPENOCDPATH=/usr/local
+
+MK := mkdir
+RM := rm -rf
+
+#echo suspend
+ifeq ("$(VERBOSE)","1")
+NO_ECHO := 
+else
+NO_ECHO := @
+endif
+
+# Toolchain commands
+CC              := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-gcc'
+AS              := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-as'
+AR              := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-ar' -r
+LD              := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-ld'
+NM              := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-nm'
+OBJDUMP         := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-objdump'
+OBJCOPY         := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-objcopy'
+SIZE            := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-size'
+GDB             := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-gdb'
+OPENOCD         := '$(OPENOCDPATH)/bin/openocd'
+
+OBJECT_DIRECTORY = _build
+OUTPUT_BINARY_DIRECTORY = $(OBJECT_DIRECTORY)
+
+# Sorting removes duplicates
+BUILD_DIRECTORIES := $(sort $(OBJECT_DIRECTORY))
+
+#assembly files common to all targets
+OBJS += gcc_startup_nrf52.o
+
+OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(OBJS) )
+
+#includes common to all targets
+INC_PATHS += -I$(SDK_PATH)/components/libraries/fifo
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/delay
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/clock
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/ppi
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/spi_master
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/spi_slave
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/timer
+INC_PATHS += -I$(SDK_PATH)/components/libraries/util
+INC_PATHS += -I$(SDK_PATH)/components/ble/device_manager
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/rtc
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/uart
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/qdec
+INC_PATHS += -I$(SDK_PATH)/components/ble/common
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/pstorage
+INC_PATHS += -I$(SDK_PATH)/components/libraries/uart
+INC_PATHS += -I$(SDK_PATH)/components/device
+INC_PATHS += -I$(SDK_PATH)/components/libraries/button
+INC_PATHS += -I$(SDK_PATH)/components/libraries/timer
+INC_PATHS += -I$(SDK_PATH)/components/libraries/log
+INC_PATHS += -I$(SDK_PATH)/components/libraries/log/src
+INC_PATHS += -I$(SDK_PATH)/components/libraries/sensorsim
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/gpiote
+INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_nus
+INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_lbs
+INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_dis
+INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_bas
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/hal
+INC_PATHS += -I$(SDK_PATH)/components/toolchain/gcc
+# SDK <= 11
+INC_PATHS += -I$(SDK_PATH)/components/toolchain/CMSIS/Include
+# SDK = 12 
+INC_PATHS += -I$(SDK_PATH)/components/toolchain/cmsis/include
+INC_PATHS += -I$(SDK_PATH)/components/toolchain
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/nrf_soc_nosd
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/common
+INC_PATHS += -I.
+INC_PATHS += -I$(TEMPLATEROOT)
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/config
+INC_PATHS += -I$(SDK_PATH)/components/ble/ble_advertising
+INC_PATHS += -I$(SDK_PATH)/components/libraries/trace
+INC_PATHS += -I$(SDK_PATH)/components/softdevice/common/softdevice_handler
+INC_PATHS += -I$(SDK_PATH)/components/drivers_ext/segger_rtt
+INC_PATHS += -I$(SDK_PATH)/examples/bsp
+
+#flags common to all targets
+CFLAGS += -DNRF52
+CFLAGS += -mcpu=cortex-m4
+CFLAGS+= $(INC_PATHS)
+CFLAGS += -mthumb -mabi=aapcs --std=gnu99
+CFLAGS += -Wall -Werror
+CFLAGS += -mfloat-abi=soft
+# keep every function in separate section. This will allow linker to dump unused functions
+CFLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
+CFLAGS += -fno-builtin --short-enums
+
+
+# keep every function in separate section. This will allow linker to dump unused functions
+LDFLAGS += -Xlinker -Map=$(OBJECT_DIRECTORY)/$(OUTPUT_FILENAME).map
+LDFLAGS += -mthumb -mabi=aapcs -L$(TEMPLATE_PATH) -T$(LDSCRIPT)
+LDFLAGS += -mcpu=cortex-m4
+# let linker to dump unused sections
+LDFLAGS += -Wl,--gc-sections
+# use newlib in nano version
+LDFLAGS += --specs=nano.specs -lc -lnosys
+
+# Assembler flags
+ASMFLAGS += -x assembler-with-cpp
+ASMFLAGS += -DNRF52
+ASMFLAGS += -D__STACK_SIZE=2048
+ASMFLAGS += -D__HEAP_SIZE=512
+
+#default target - first one defined
+#default: clean $(OUTPUT_BINARY_DIRECTORY)/$(BIN) $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
+default: $(OUTPUT_BINARY_DIRECTORY)/$(BIN) $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
+
+#building all targets
+#all: clean $(OUTPUT_BINARY_DIRECTORY)/$(BIN) $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
+all: $(OUTPUT_BINARY_DIRECTORY)/$(BIN) $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
+
+#target for printing all targets
+help:
+	@echo following targets are available:
+	@echo 	$(OUTPUT_FILENAME)
+
+#includes common to all targets
+
+vpath %.c $(TEMPLATEROOT)
+# SDK <= 11
+vpath %.s $(TEMPLATEROOT)
+# SDK = 12 
+vpath %.S $(TEMPLATEROOT)
+vpath %.c $(SDK_PATH)/components/libraries/fifo
+vpath %.c $(SDK_PATH)/components/drivers_nrf/delay
+vpath %.c $(SDK_PATH)/components/drivers_nrf/clock
+vpath %.c $(SDK_PATH)/components/drivers_nrf/ppi
+vpath %.c $(SDK_PATH)/components/drivers_nrf/spi_master
+vpath %.c $(SDK_PATH)/components/drivers_nrf/spi_slave
+vpath %.c $(SDK_PATH)/components/drivers_nrf/timer
+vpath %.c $(SDK_PATH)/components/libraries/util
+vpath %.c $(SDK_PATH)/components/ble/device_manager
+vpath %.c $(SDK_PATH)/components/drivers_nrf/uart
+vpath %.c $(SDK_PATH)/components/drivers_nrf/qdec
+vpath %.c $(SDK_PATH)/components/drivers_nrf/rtc
+vpath %.c $(SDK_PATH)/components/ble/common
+vpath %.c $(SDK_PATH)/components/drivers_nrf/pstorage
+vpath %.c $(SDK_PATH)/components/libraries/uart
+vpath %.c $(SDK_PATH)/components/device
+vpath %.c $(SDK_PATH)/components/libraries/button
+vpath %.c $(SDK_PATH)/components/libraries/timer
+vpath %.c $(SDK_PATH)/components/libraries/log
+vpath %.c $(SDK_PATH)/components/libraries/log/src
+vpath %.c $(SDK_PATH)/components/libraries/sensorsim
+vpath %.c $(SDK_PATH)/components/drivers_nrf/gpiote
+vpath %.c $(SDK_PATH)/components/ble/ble_services/ble_nus
+vpath %.c $(SDK_PATH)/components/ble/ble_services/ble_lbs
+vpath %.c $(SDK_PATH)/components/ble/ble_services/ble_dis
+vpath %.c $(SDK_PATH)/components/ble/ble_services/ble_bas
+vpath %.c $(SDK_PATH)/components/drivers_nrf/hal
+vpath %.c $(SDK_PATH)/components/toolchain/gcc
+# SDK <= 11
+vpath %.s $(SDK_PATH)/components/toolchain/gcc
+# SDK = 12 
+vpath %.S $(SDK_PATH)/components/toolchain/gcc
+vpath %.c $(SDK_PATH)/components/toolchain
+vpath %.c $(SDK_PATH)/components/drivers_nrf/nrf_soc_nosd
+vpath %.c $(SDK_PATH)/components/drivers_nrf/common
+vpath %.c $(SDK_PATH)/components/drivers_nrf/config
+vpath %.c $(SDK_PATH)/components/ble/ble_advertising
+vpath %.c $(SDK_PATH)/components/libraries/trace
+vpath %.c $(SDK_PATH)/components/softdevice/common/softdevice_handler
+vpath %.c $(SDK_PATH)/components/drivers_ext/segger_rtt
+vpath %.c $(SDK_PATH)/examples/bsp
+
+## Create build directories
+$(BUILD_DIRECTORIES):
+	$(MK) $@
+
+# Build executable 
+
+$(OUTPUT_BINARY_DIRECTORY)/$(BIN) : $(OUTPUT_BINARY_DIRECTORY)/$(OUT)
+	$(OBJCOPY) -O binary $(OUTPUT_BINARY_DIRECTORY)/$(OUT) $(OUTPUT_BINARY_DIRECTORY)/$(BIN)
+
+$(OUTPUT_BINARY_DIRECTORY)/$(HEX) : $(OUTPUT_BINARY_DIRECTORY)/$(OUT)
+	$(OBJCOPY) -O ihex $(OUTPUT_BINARY_DIRECTORY)/$(OUT) $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
+
+$(OUTPUT_BINARY_DIRECTORY)/$(OUT) : $(BUILD_DIRECTORIES) $(OBJECTS)
+	$(CC) $(LDFLAGS) -o $@ $(OBJECTS) $(LDLIBS)
+
+# compile and generate dependency info
+
+$(OBJECT_DIRECTORY)/%.o: %.c
+	$(CC) -c $(CFLAGS) $< -o $@
+
+$(OBJECT_DIRECTORY)/%.o: %.s
+	$(CC) -c $(ASMFLAGS) -c $< -o $@
+
+$(OBJECT_DIRECTORY)/%.o: %.S
+	$(CC) -c $(ASMFLAGS) -c $< -o $@
+
+$(OBJECT_DIRECTORY)/%.o: %.cpp
+	$(CPP) -c $(CFLAGS) $< -o $@
+
+flash: $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
+	$(OPENOCD) -d2 -f $(TEMPLATEROOT)/openocd_nrf52.cfg -c 'init_reset halt; program $(OUTPUT_BINARY_DIRECTORY)/$(HEX) verify; reset; exit'
+
+clean:
+	$(RM) $(BUILD_DIRECTORIES)
+
+cleanobj:
+	$(RM) $(BUILD_DIRECTORIES)/*.o
+
