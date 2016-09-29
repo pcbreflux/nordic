@@ -244,10 +244,10 @@ flash: $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
 flash_erase: $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
 	$(OPENOCD) -d2 -f $(TEMPLATEROOT)/openocd.cfg -c 'init_reset halt; init; halt; nrf51 mass_erase; program $(OUTPUT_BINARY_DIRECTORY)/$(HEX) verify; reset; exit'
 
-flash_s110:
+flash_s110: $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
 	$(OPENOCD) -d2 -f $(TEMPLATEROOT)/openocd.cfg -c 'init_reset halt; init; halt; nrf51 mass_erase; program $(S110_HEX_FILE) verify; program $(OUTPUT_BINARY_DIRECTORY)/$(HEX) verify; reset; exit'
 
-flash_s130:
+flash_s130: $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
 	$(OPENOCD) -d2 -f $(TEMPLATEROOT)/openocd.cfg -c 'init_reset halt; init; halt; nrf51 mass_erase; program $(S130_HEX_FILE) verify; program $(OUTPUT_BINARY_DIRECTORY)/$(HEX) verify; reset; exit'
 
 clean:

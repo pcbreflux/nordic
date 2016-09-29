@@ -36,7 +36,7 @@
 #define IS_SRVC_CHANGED_CHARACT_PRESENT 0                                 /**< Include or not the service_changed characteristic. if not enabled, the server's database cannot be changed for the lifetime of the device*/
 
 #define APP_CFG_NON_CONN_ADV_TIMEOUT    0                                 /**< Time for which the device must be advertising in non-connectable mode (in seconds). 0 disables timeout. */
-#define NON_CONNECTABLE_ADV_INTERVAL    MSEC_TO_UNITS(100, UNIT_0_625_MS) /**< The advertising interval for non-connectable advertisement (100 ms). This value can vary between 100ms to 10.24s). */
+#define NON_CONNECTABLE_ADV_INTERVAL    MSEC_TO_UNITS(2000, UNIT_0_625_MS) /**< The advertising interval for non-connectable advertisement (100 ms). This value can vary between 100ms to 10.24s). */
 
 #define APP_BEACON_INFO_LENGTH          0x17                              /**< Total length of information advertised by the Beacon. */
 #define APP_ADV_DATA_LENGTH             0x15                              /**< Length of manufacturer specific data in the advertisement. */
@@ -214,16 +214,14 @@ int main(void)
 
     NRF_LOG_INFO("main started\r\n");
 
-    if (1==1) {
-	    APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
-	    err_code = bsp_init(BSP_INIT_LED, APP_TIMER_TICKS(100, APP_TIMER_PRESCALER), NULL);
-	    APP_ERROR_CHECK(err_code);
-	    ble_stack_init();
-	    advertising_init();
-	    // Start execution.
-	    NRF_LOG_INFO("BLE Beacon started\r\n");
-	    advertising_start();
-    }
+    // APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
+    // err_code = bsp_init(BSP_INIT_LED, APP_TIMER_TICKS(100, APP_TIMER_PRESCALER), NULL);
+    // APP_ERROR_CHECK(err_code);
+    ble_stack_init();
+    advertising_init();
+    // Start execution.
+    NRF_LOG_INFO("BLE Beacon started\r\n");
+    advertising_start();
 
     // Enter main loop.
     for (;; )
