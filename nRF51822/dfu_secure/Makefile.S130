@@ -1,0 +1,71 @@
+TEMPLATEROOT = ..
+
+# compilation flags for gdb
+
+CFLAGS += -DuECC_ENABLE_VLI_API
+CFLAGS += -DuECC_VLI_NATIVE_LITTLE_ENDIAN=1
+CFLAGS += -DuECC_SQUARE_FUNC=1
+CFLAGS += -DuECC_SUPPORTS_secp256r1=1
+CFLAGS += -DuECC_SUPPORT_COMPRESSED_POINT=0
+CFLAGS += -DuECC_OPTIMIZATION_LEVEL=3
+CFLAGS += -O0 -g
+CFLAGS += -DBOARD_CUSTOM
+CFLAGS += -DNRF51822
+CFLAGS += -DNRF_LOG_USES_UART=1
+CFLAGS += -DSOFTDEVICE_PRESENT
+CFLAGS += -DNRF_DFU_SETTINGS_VERSION=1
+CFLAGS += -D__HEAP_SIZE=0
+CFLAGS += -DSVC_INTERFACE_CALL_AS_NORMAL_FUNCTION
+CFLAGS += -DS130
+CFLAGS += -DBLE_STACK_SUPPORT_REQD
+CFLAGS += -DSWI_DISABLE0
+CFLAGS += -DNRF_SD_BLE_API_VERSION=2
+CFLAGS += -DNRF_DFU_DEBUG_VERSION
+CFLAGS += -Os -g3
+#CFLAGS += -Os -flto
+ASMFLAGS += -DuECC_ENABLE_VLI_API
+ASMFLAGS += -DuECC_VLI_NATIVE_LITTLE_ENDIAN=1
+ASMFLAGS += -DuECC_SQUARE_FUNC=1
+ASMFLAGS += -DuECC_SUPPORTS_secp256r1=1
+ASMFLAGS += -DuECC_SUPPORT_COMPRESSED_POINT=0
+ASMFLAGS += -DuECC_OPTIMIZATION_LEVEL=3
+ASFLAGS += -g 
+ASMFLAGS += -DBOARD_CUSTOM
+ASMFLAGS += -DNRF51822
+ASMFLAGS += -DNRF_LOG_USES_UART=1
+ASMFLAGS += -DSWI_DISABLE0
+ASMFLAGS += -DSOFTDEVICE_PRESENT
+ASMFLAGS += -DNRF51
+ASMFLAGS += -DNRF_DFU_SETTINGS_VERSION=1
+ASMFLAGS += -D__HEAP_SIZE=0
+ASMFLAGS += -DSVC_INTERFACE_CALL_AS_NORMAL_FUNCTION
+ASMFLAGS += -DS130
+ASMFLAGS += -DBLE_STACK_SUPPORT_REQD
+ASMFLAGS += -DNRF_SD_BLE_API_VERSION=2
+ASMFLAGS += -DNRF_DFU_DEBUG_VERSION
+
+LDSCRIPT = secure_dfu_gcc_nrf51_QFAC_debug.ld
+
+INC_PATHS += -I$(SDK_PATH)/components/softdevice/s130/headers
+INC_PATHS += -I$(SDK_PATH)/components/softdevice/s130/headers/nrf51
+INC_PATHS += -I$(TEMPLATEROOT)/micro-ecc
+
+vpath %.c $(SDK_PATH)/components/softdevice/s130/headers
+vpath %.c $(SDK_PATH)/components/softdevice/s130/headers/nrf51
+vpath %.c $(TEMPLATEROOT)/micro-ecc
+
+# object files
+
+OBJS = app_error_weak.o app_fifo.o app_scheduler.o app_timer.o app_timer_appsh.o app_util_platform.o
+OBJS += crc32.o ecc.o fstorage.o hci_mem_pool.o nrf_assert.o nrf_crypto.o sha256.o app_uart_fifo.o nrf_drv_common.o nrf_drv_uart.o
+OBJS += nrf_drv_rng.o nrf_nvmc.o nrf_ble_dfu.o 
+OBJS += nrf_log_backend_serial.o nrf_log_frontend.o
+OBJS += dfu-cc.pb.o dfu_public_key.o dfu_req_handling.o main.o 
+OBJS += ble_advdata.o ble_conn_params.o ble_srv_common.o pb_common.o pb_decode.o
+OBJS += system_nrf51.o softdevice_handler.o softdevice_handler_appsh.o nrf_bootloader.o
+OBJS += nrf_bootloader_app_start.o nrf_bootloader_info.o nrf_dfu.o nrf_dfu_flash.o 
+OBJS += nrf_dfu_mbr.o nrf_dfu_settings.o nrf_dfu_transport.o nrf_dfu_utils.o uECC.o
+
+# include common make file
+
+include $(TEMPLATEROOT)/Makefile.common

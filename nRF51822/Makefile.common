@@ -16,7 +16,7 @@ TEMPLATE_PATH=$(SDK_PATH)/components/toolchain/gcc
 OPENOCDPATH=/usr/local
 S110_HEX_FILE=$(HOME)/nordic/s110_nrf51_8.0.0_API/s110_nrf51_8.0.0_softdevice.hex
 #S130_HEX_FILE=$(HOME)/nordic/s130_nrf51_1.0.0_API/s130_nrf51_1.0.0_softdevice.hex
-S130_HEX_FILE=$(HOME)/nordic/s130_nrf51_2.0.1_API/s130_nrf51_2.0.1_softdevice.hex
+S130_HEX_FILE=$(SDK_PATH)/components/softdevice/s130/hex/s130_nrf51_2.0.1_softdevice.hex
 
 MK := mkdir
 RM := rm -rf
@@ -108,6 +108,7 @@ INC_PATHS += -I$(SDK_PATH)/components/toolchain/CMSIS/Include
 INC_PATHS += -I$(SDK_PATH)/components/toolchain/gcc
 INC_PATHS += -I$(SDK_PATH)/examples/bsp
 INC_PATHS += -I$(SDK_PATH)/external/nano-pb
+INC_PATHS += -I$(SDK_PATH)/external/segger_rtt
 
 #flags common to all targets
 CFLAGS += -DNRF51
@@ -133,8 +134,8 @@ LDFLAGS += --specs=nano.specs -lc -lnosys
 # Assembler flags
 ASMFLAGS += -x assembler-with-cpp
 ASMFLAGS += -DNRF51
-ASMFLAGS += -D__STACK_SIZE=2048
-ASMFLAGS += -D__HEAP_SIZE=512
+#ASMFLAGS += -D__STACK_SIZE=2048
+#ASMFLAGS += -D__HEAP_SIZE=512
 
 #default target - first one defined
 #default: clean $(OUTPUT_BINARY_DIRECTORY)/$(BIN) $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
@@ -208,6 +209,7 @@ vpath %.s $(SDK_PATH)/components/toolchain/gcc
 vpath %.S $(SDK_PATH)/components/toolchain/gcc
 vpath %.c $(SDK_PATH)/examples/bsp
 vpath %.c $(SDK_PATH)/external/nano-pb
+vpath %.c $(SDK_PATH)/external/segger_rtt
 
 ## Create build directories
 $(BUILD_DIRECTORIES):
@@ -241,8 +243,8 @@ $(OBJECT_DIRECTORY)/%.o: %.cpp
 flash: $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
 	$(OPENOCD) -d2 -f $(TEMPLATEROOT)/openocd.cfg -c 'init_reset halt; program $(OUTPUT_BINARY_DIRECTORY)/$(HEX) verify; reset; exit'
 
-flash_erase: $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
-	$(OPENOCD) -d2 -f $(TEMPLATEROOT)/openocd.cfg -c 'init_reset halt; init; halt; nrf51 mass_erase; program $(OUTPUT_BINARY_DIRECTORY)/$(HEX) verify; reset; exit'
+flash_erase: 
+	$(OPENOCD) -d2 -f $(TEMPLATEROOT)/openocd.cfg -c 'init_reset halt; init; halt; nrf51 mass_erase; reset; exit'
 
 flash_s110: $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
 	$(OPENOCD) -d2 -f $(TEMPLATEROOT)/openocd.cfg -c 'init_reset halt; init; halt; nrf51 mass_erase; program $(S110_HEX_FILE) verify; program $(OUTPUT_BINARY_DIRECTORY)/$(HEX) verify; reset; exit'
