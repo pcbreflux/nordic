@@ -41,21 +41,27 @@
 /* all LEDs are lit when GPIO is low */
 #define LEDS_INV_MASK  ~LEDS_MASK
 
-#define BUTTONS_NUMBER 2
+#define BUTTONS_NUMBER 4
 
 #define BUTTON_START   16
 #define BUTTON_1       16
 #define BUTTON_2       17
+#define BUTTON_3       17
+#define BUTTON_4       17
 #define BUTTON_STOP    17
 #define BUTTON_PULL    NRF_GPIO_PIN_PULLUP
 
-#define BUTTONS_LIST { BUTTON_1, BUTTON_2 }
+#define BUTTONS_LIST { BUTTON_1, BUTTON_2, BUTTON_3, BUTTON_4 }
 
 #define BSP_BUTTON_0   BUTTON_1
 #define BSP_BUTTON_1   BUTTON_2
+#define BSP_BUTTON_2   BUTTON_3
+#define BSP_BUTTON_3   BUTTON_4
 
 #define BSP_BUTTON_0_MASK (1<<BSP_BUTTON_0)
 #define BSP_BUTTON_1_MASK (1<<BSP_BUTTON_1)
+#define BSP_BUTTON_2_MASK (1<<BSP_BUTTON_2)
+#define BSP_BUTTON_3_MASK (1<<BSP_BUTTON_3)
 
 #define BUTTONS_MASK   0x001E0000
 
@@ -71,10 +77,10 @@
 #define SPIS_MOSI_PIN  25    // SPI MOSI signal. 
 #define SPIS_SCK_PIN   29    // SPI SCK signal. 
 
-#define SPIM0_SCK_PIN       4     /**< SPI clock GPIO pin number. */
-#define SPIM0_MOSI_PIN      1     /**< SPI Master Out Slave In GPIO pin number. */
-#define SPIM0_MISO_PIN      3     /**< SPI Master In Slave Out GPIO pin number. */
-#define SPIM0_SS_PIN        2     /**< SPI Slave Select GPIO pin number. */
+#define SPIM0_SCK_PIN       24     /**< SPI clock GPIO pin number. */
+#define SPIM0_MOSI_PIN      25    /**< SPI Master Out Slave In GPIO pin number. */
+#define SPIM0_MISO_PIN      26     /**< SPI Master In Slave Out GPIO pin number. */
+#define SPIM0_SS_PIN        28     /**< SPI Slave Select GPIO pin number. */
 
 #define SPIM1_SCK_PIN       15     /**< SPI clock GPIO pin number. */
 #define SPIM1_MOSI_PIN      12     /**< SPI Master Out Slave In GPIO pin number. */
