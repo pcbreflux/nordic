@@ -62,6 +62,7 @@ INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_lbs
 INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_nus
 INC_PATHS += -I$(SDK_PATH)/components/ble/common
 INC_PATHS += -I$(SDK_PATH)/components/ble/device_manager
+INC_PATHS += -I$(SDK_PATH)/components/ble/peer_manager
 INC_PATHS += -I$(SDK_PATH)/components/device
 INC_PATHS += -I$(SDK_PATH)/components/drivers_ext/segger_rtt
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/clock
@@ -88,6 +89,7 @@ INC_PATHS += -I$(SDK_PATH)/components/libraries/crc32
 INC_PATHS += -I$(SDK_PATH)/components/libraries/crypto
 INC_PATHS += -I$(SDK_PATH)/components/libraries/ecc
 INC_PATHS += -I$(SDK_PATH)/components/libraries/experimental_section_vars
+INC_PATHS += -I$(SDK_PATH)/components/libraries/fds
 INC_PATHS += -I$(SDK_PATH)/components/libraries/fifo
 INC_PATHS += -I$(SDK_PATH)/components/libraries/fstorage
 INC_PATHS += -I$(SDK_PATH)/components/libraries/hardfault
@@ -165,6 +167,7 @@ vpath %.c $(SDK_PATH)/components/ble/ble_services/ble_lbs
 vpath %.c $(SDK_PATH)/components/ble/ble_services/ble_nus
 vpath %.c $(SDK_PATH)/components/ble/common
 vpath %.c $(SDK_PATH)/components/ble/device_manager
+vpath %.c $(SDK_PATH)/components/ble/peer_manager
 vpath %.c $(SDK_PATH)/components/device
 vpath %.c $(SDK_PATH)/components/drivers_ext/segger_rtt
 vpath %.c $(SDK_PATH)/components/drivers_nrf/clock
@@ -191,6 +194,7 @@ vpath %.c $(SDK_PATH)/components/libraries/crc32
 vpath %.c $(SDK_PATH)/components/libraries/crypto
 vpath %.c $(SDK_PATH)/components/libraries/ecc
 vpath %.c $(SDK_PATH)/components/libraries/experimental_section_vars
+vpath %.c $(SDK_PATH)/components/libraries/fds
 vpath %.c $(SDK_PATH)/components/libraries/fifo
 vpath %.c $(SDK_PATH)/components/libraries/fstorage
 vpath %.c $(SDK_PATH)/components/libraries/hardfault
