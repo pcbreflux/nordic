@@ -80,6 +80,8 @@ INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/rtc
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/spi_master
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/spi_slave
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/timer
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/twi_master
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/tws_slave
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/uart
 INC_PATHS += -I$(SDK_PATH)/components/libraries/bootloader
 INC_PATHS += -I$(SDK_PATH)/components/libraries/bootloader/ble_dfu
@@ -185,6 +187,8 @@ vpath %.c $(SDK_PATH)/components/drivers_nrf/rtc
 vpath %.c $(SDK_PATH)/components/drivers_nrf/spi_master
 vpath %.c $(SDK_PATH)/components/drivers_nrf/spi_slave
 vpath %.c $(SDK_PATH)/components/drivers_nrf/timer
+vpath %.c $(SDK_PATH)/components/drivers_nrf/twi_master
+vpath %.c $(SDK_PATH)/components/drivers_nrf/twis_slave
 vpath %.c $(SDK_PATH)/components/drivers_nrf/uart
 vpath %.c $(SDK_PATH)/components/libraries/bootloader
 vpath %.c $(SDK_PATH)/components/libraries/bootloader/ble_dfu
@@ -252,6 +256,9 @@ flash: $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
 
 flash_erase: 
 	$(OPENOCD) -d2 -f $(TEMPLATEROOT)/openocd.cfg -c 'init_reset halt; init; halt; nrf51 mass_erase; reset; exit'
+
+flash_reset: 
+	$(OPENOCD) -d2 -f $(TEMPLATEROOT)/openocd.cfg -c 'init_reset halt; init; reset; exit'
 
 flash_s110: $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
 	$(OPENOCD) -d2 -f $(TEMPLATEROOT)/openocd.cfg -c 'init_reset halt; init; halt; nrf51 mass_erase; program $(S110_HEX_FILE) verify; program $(OUTPUT_BINARY_DIRECTORY)/$(HEX) verify; reset; exit'
