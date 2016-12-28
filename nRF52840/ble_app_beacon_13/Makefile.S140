@@ -1,0 +1,40 @@
+TEMPLATEROOT = ..
+
+# compilation flags for gdb
+
+CFLAGS  += -O0 -g
+CFLAGS += -DBOARD_CUSTOM
+CFLAGS += -DNRF52840_XXAA
+CFLAGS += -DNRF_LOG_USES_UART=1
+CFLAGS += -DSOFTDEVICE_PRESENT
+CFLAGS += -DS140
+CFLAGS += -DNRF_SD_BLE_API_VERSION=5
+CFLAGS += -DBLE_STACK_SUPPORT_REQD
+CFLAGS += -DSWI_DISABLE0
+ASMFLAGS += -g 
+ASMFLAGS += -DBOARD_CUSTOM
+ASMFLAGS += -DNRF52840_XXAA
+ASMFLAGS += -DNRF_LOG_USES_UART=1
+ASMFLAGS += -DSOFTDEVICE_PRESENT
+ASMFLAGS += -DS140
+ASMFLAGS += -DNRF_SD_BLE_API_VERSION=5
+ASMFLAGS += -DBLE_STACK_SUPPORT_REQD
+ASMFLAGS += -DSWI_DISABLE0
+
+LDSCRIPT = ./s140_v2_nrf52840_QIAA.ld
+INC_PATHS += -I$(SDK_PATH)/components/softdevice/s140/headers
+
+vpath %.c $(SDK_PATH)/components/softdevice/s140/headers
+
+# object files
+
+OBJS =  nrf_log_backend_serial.o nrf_log_frontend.o 
+OBJS += app_button.o app_error.o app_error_weak.o app_fifo.o app_timer.o app_util_platform.o 
+OBJS += hardfault_implementation.o nrf_assert.o
+OBJS += nrf_drv_clock.o nrf_drv_common.o nrf_drv_gpiote.o nrf_drv_uart.o
+OBJS += boards.o bsp.o main.o
+OBJS += ble_advdata.o ble_conn_params.o ble_srv_common.o 
+OBJS += system_nrf52840.o softdevice_handler.o
+# include common make file
+
+include $(TEMPLATEROOT)/Makefile.common

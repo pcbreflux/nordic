@@ -15,6 +15,10 @@ SDK_PATH=$(HOME)/nordic/nRF5_SDK_13.0.0
 #SDK_PATH=$(HOME)/nordic/nRF51_SDK_10.0.0
 TEMPLATE_PATH=$(SDK_PATH)/components/toolchain/gcc
 OPENOCDPATH=/usr/local
+#S110_HEX_FILE=$(HOME)/nordic/s110_nrf51_8.0.0_API/s110_nrf51_8.0.0_softdevice.hex
+#S130_HEX_FILE=$(HOME)/nordic/s130_nrf51_1.0.0_API/s130_nrf51_1.0.0_softdevice.hex
+#S130_HEX_FILE=$(SDK_PATH)/components/softdevice/s130/hex/s130_nrf51_2.0.1_softdevice.hex
+S140_HEX_FILE=$(SDK_PATH)/components/softdevice/s140/hex/s140_nrf52840_5.0.0-1.alpha_softdevice.hex
 
 MK := mkdir
 RM := rm -rf
@@ -50,49 +54,68 @@ OBJS += gcc_startup_nrf52840.o
 OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(OBJS) )
 
 #includes common to all targets
-INC_PATHS += -I$(SDK_PATH)/components/libraries/fifo
-INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/delay
+INC_PATHS += -I.
+INC_PATHS += -I$(TEMPLATEROOT)
+INC_PATHS += -I$(SDK_PATH)/components/ble/ble_advertising
+INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_bas
+INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_dis
+INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_lbs
+INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_nus
+INC_PATHS += -I$(SDK_PATH)/components/ble/common
+INC_PATHS += -I$(SDK_PATH)/components/ble/device_manager
+INC_PATHS += -I$(SDK_PATH)/components/ble/peer_manager
+INC_PATHS += -I$(SDK_PATH)/components/boards
+INC_PATHS += -I$(SDK_PATH)/components/device
+INC_PATHS += -I$(SDK_PATH)/components/drivers_ext/segger_rtt
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/clock
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/common
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/config
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/delay
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/gpiote
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/hal
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/nrf_soc_nosd
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/ppi
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/pstorage
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/qdec
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/rng
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/rtc
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/spi_master
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/spi_slave
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/timer
-INC_PATHS += -I$(SDK_PATH)/components/libraries/util
-INC_PATHS += -I$(SDK_PATH)/components/ble/device_manager
-INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/rtc
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/twi_master
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/tws_slave
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/uart
-INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/qdec
-INC_PATHS += -I$(SDK_PATH)/components/ble/common
-INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/pstorage
-INC_PATHS += -I$(SDK_PATH)/components/libraries/uart
-INC_PATHS += -I$(SDK_PATH)/components/device
+INC_PATHS += -I$(SDK_PATH)/components/libraries/bootloader
+INC_PATHS += -I$(SDK_PATH)/components/libraries/bootloader/ble_dfu
+INC_PATHS += -I$(SDK_PATH)/components/libraries/bootloader/dfu
 INC_PATHS += -I$(SDK_PATH)/components/libraries/button
-INC_PATHS += -I$(SDK_PATH)/components/libraries/timer
+INC_PATHS += -I$(SDK_PATH)/components/libraries/bsp
+INC_PATHS += -I$(SDK_PATH)/components/libraries/crc32
+INC_PATHS += -I$(SDK_PATH)/components/libraries/crypto
+INC_PATHS += -I$(SDK_PATH)/components/libraries/ecc
+INC_PATHS += -I$(SDK_PATH)/components/libraries/experimental_section_vars
+INC_PATHS += -I$(SDK_PATH)/components/libraries/fds
+INC_PATHS += -I$(SDK_PATH)/components/libraries/fifo
+INC_PATHS += -I$(SDK_PATH)/components/libraries/fstorage
+INC_PATHS += -I$(SDK_PATH)/components/libraries/hardfault
+INC_PATHS += -I$(SDK_PATH)/components/libraries/hci
 INC_PATHS += -I$(SDK_PATH)/components/libraries/log
 INC_PATHS += -I$(SDK_PATH)/components/libraries/log/src
+INC_PATHS += -I$(SDK_PATH)/components/libraries/scheduler
 INC_PATHS += -I$(SDK_PATH)/components/libraries/sensorsim
-INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/gpiote
-INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_nus
-INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_lbs
-INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_dis
-INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_bas
-INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/hal
-INC_PATHS += -I$(SDK_PATH)/components/toolchain/gcc
-# SDK <= 11
-INC_PATHS += -I$(SDK_PATH)/components/toolchain/CMSIS/Include
-# SDK = 12 
-INC_PATHS += -I$(SDK_PATH)/components/toolchain/cmsis/include
-INC_PATHS += -I$(SDK_PATH)/components/toolchain
-INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/nrf_soc_nosd
-INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/common
-INC_PATHS += -I.
-INC_PATHS += -I$(TEMPLATEROOT)
-INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/config
-INC_PATHS += -I$(SDK_PATH)/components/ble/ble_advertising
+INC_PATHS += -I$(SDK_PATH)/components/libraries/sha256
+INC_PATHS += -I$(SDK_PATH)/components/libraries/svc
+INC_PATHS += -I$(SDK_PATH)/components/libraries/timer
 INC_PATHS += -I$(SDK_PATH)/components/libraries/trace
+INC_PATHS += -I$(SDK_PATH)/components/libraries/uart
+INC_PATHS += -I$(SDK_PATH)/components/libraries/util
 INC_PATHS += -I$(SDK_PATH)/components/softdevice/common/softdevice_handler
-INC_PATHS += -I$(SDK_PATH)/components/drivers_ext/segger_rtt
-INC_PATHS += -I$(SDK_PATH)/examples/bsp
+INC_PATHS += -I$(SDK_PATH)/components/toolchain
+INC_PATHS += -I$(SDK_PATH)/components/toolchain/cmsis/include
+INC_PATHS += -I$(SDK_PATH)/components/toolchain/CMSIS/Include
+INC_PATHS += -I$(SDK_PATH)/components/toolchain/gcc
+INC_PATHS += -I$(SDK_PATH)/external/nano-pb
+INC_PATHS += -I$(SDK_PATH)/external/segger_rtt
 
 #flags common to all targets
 CFLAGS += -mcpu=cortex-m4
@@ -137,51 +160,68 @@ help:
 #includes common to all targets
 
 vpath %.c $(TEMPLATEROOT)
-# SDK <= 11
 vpath %.s $(TEMPLATEROOT)
-# SDK = 12 
 vpath %.S $(TEMPLATEROOT)
-vpath %.c $(SDK_PATH)/components/libraries/fifo
-vpath %.c $(SDK_PATH)/components/drivers_nrf/delay
+vpath %.c $(SDK_PATH)/components/ble/ble_advertising
+vpath %.c $(SDK_PATH)/components/ble/ble_services/ble_bas
+vpath %.c $(SDK_PATH)/components/ble/ble_services/ble_dis
+vpath %.c $(SDK_PATH)/components/ble/ble_services/ble_lbs
+vpath %.c $(SDK_PATH)/components/ble/ble_services/ble_nus
+vpath %.c $(SDK_PATH)/components/boards
+vpath %.c $(SDK_PATH)/components/ble/common
+vpath %.c $(SDK_PATH)/components/ble/device_manager
+vpath %.c $(SDK_PATH)/components/ble/peer_manager
+vpath %.c $(SDK_PATH)/components/device
+vpath %.c $(SDK_PATH)/components/drivers_ext/segger_rtt
 vpath %.c $(SDK_PATH)/components/drivers_nrf/clock
+vpath %.c $(SDK_PATH)/components/drivers_nrf/common
+vpath %.c $(SDK_PATH)/components/drivers_nrf/config
+vpath %.c $(SDK_PATH)/components/drivers_nrf/delay
+vpath %.c $(SDK_PATH)/components/drivers_nrf/gpiote
+vpath %.c $(SDK_PATH)/components/drivers_nrf/hal
+vpath %.c $(SDK_PATH)/components/drivers_nrf/nrf_soc_nosd
 vpath %.c $(SDK_PATH)/components/drivers_nrf/ppi
+vpath %.c $(SDK_PATH)/components/drivers_nrf/pstorage
+vpath %.c $(SDK_PATH)/components/drivers_nrf/qdec
+vpath %.c $(SDK_PATH)/components/drivers_nrf/rng
+vpath %.c $(SDK_PATH)/components/drivers_nrf/rtc
 vpath %.c $(SDK_PATH)/components/drivers_nrf/spi_master
 vpath %.c $(SDK_PATH)/components/drivers_nrf/spi_slave
 vpath %.c $(SDK_PATH)/components/drivers_nrf/timer
-vpath %.c $(SDK_PATH)/components/libraries/util
-vpath %.c $(SDK_PATH)/components/ble/device_manager
+vpath %.c $(SDK_PATH)/components/drivers_nrf/twi_master
+vpath %.c $(SDK_PATH)/components/drivers_nrf/twis_slave
 vpath %.c $(SDK_PATH)/components/drivers_nrf/uart
-vpath %.c $(SDK_PATH)/components/drivers_nrf/qdec
-vpath %.c $(SDK_PATH)/components/drivers_nrf/rtc
-vpath %.c $(SDK_PATH)/components/ble/common
-vpath %.c $(SDK_PATH)/components/drivers_nrf/pstorage
-vpath %.c $(SDK_PATH)/components/libraries/uart
-vpath %.c $(SDK_PATH)/components/device
+vpath %.c $(SDK_PATH)/components/libraries/bootloader
+vpath %.c $(SDK_PATH)/components/libraries/bootloader/ble_dfu
+vpath %.c $(SDK_PATH)/components/libraries/bootloader/dfu
 vpath %.c $(SDK_PATH)/components/libraries/button
-vpath %.c $(SDK_PATH)/components/libraries/timer
+vpath %.c $(SDK_PATH)/components/libraries/bsp
+vpath %.c $(SDK_PATH)/components/libraries/crc32
+vpath %.c $(SDK_PATH)/components/libraries/crypto
+vpath %.c $(SDK_PATH)/components/libraries/ecc
+vpath %.c $(SDK_PATH)/components/libraries/experimental_section_vars
+vpath %.c $(SDK_PATH)/components/libraries/fds
+vpath %.c $(SDK_PATH)/components/libraries/fifo
+vpath %.c $(SDK_PATH)/components/libraries/fstorage
+vpath %.c $(SDK_PATH)/components/libraries/hardfault
+vpath %.c $(SDK_PATH)/components/libraries/hci
 vpath %.c $(SDK_PATH)/components/libraries/log
 vpath %.c $(SDK_PATH)/components/libraries/log/src
+vpath %.c $(SDK_PATH)/components/libraries/scheduler
 vpath %.c $(SDK_PATH)/components/libraries/sensorsim
-vpath %.c $(SDK_PATH)/components/drivers_nrf/gpiote
-vpath %.c $(SDK_PATH)/components/ble/ble_services/ble_nus
-vpath %.c $(SDK_PATH)/components/ble/ble_services/ble_lbs
-vpath %.c $(SDK_PATH)/components/ble/ble_services/ble_dis
-vpath %.c $(SDK_PATH)/components/ble/ble_services/ble_bas
-vpath %.c $(SDK_PATH)/components/drivers_nrf/hal
-vpath %.c $(SDK_PATH)/components/toolchain/gcc
-# SDK <= 11
-vpath %.s $(SDK_PATH)/components/toolchain/gcc
-# SDK = 12 
-vpath %.S $(SDK_PATH)/components/toolchain/gcc
-vpath %.c $(SDK_PATH)/components/toolchain
-vpath %.c $(SDK_PATH)/components/drivers_nrf/nrf_soc_nosd
-vpath %.c $(SDK_PATH)/components/drivers_nrf/common
-vpath %.c $(SDK_PATH)/components/drivers_nrf/config
-vpath %.c $(SDK_PATH)/components/ble/ble_advertising
+vpath %.c $(SDK_PATH)/components/libraries/sha256
+vpath %.c $(SDK_PATH)/components/libraries/svc
+vpath %.c $(SDK_PATH)/components/libraries/timer
 vpath %.c $(SDK_PATH)/components/libraries/trace
+vpath %.c $(SDK_PATH)/components/libraries/uart
+vpath %.c $(SDK_PATH)/components/libraries/util
 vpath %.c $(SDK_PATH)/components/softdevice/common/softdevice_handler
-vpath %.c $(SDK_PATH)/components/drivers_ext/segger_rtt
-vpath %.c $(SDK_PATH)/examples/bsp
+vpath %.c $(SDK_PATH)/components/toolchain
+vpath %.c $(SDK_PATH)/components/toolchain/gcc
+vpath %.s $(SDK_PATH)/components/toolchain/gcc
+vpath %.S $(SDK_PATH)/components/toolchain/gcc
+vpath %.c $(SDK_PATH)/external/nano-pb
+vpath %.c $(SDK_PATH)/external/segger_rtt
 
 ## Create build directories
 $(BUILD_DIRECTORIES):
@@ -213,7 +253,15 @@ $(OBJECT_DIRECTORY)/%.o: %.cpp
 	$(CPP) -c $(CFLAGS) $< -o $@
 
 flash: $(OUTPUT_BINARY_DIRECTORY)/$(HEX)
-	$(OPENOCD) -d2 -f $(TEMPLATEROOT)/openocd_nrf52.cfg -c 'init_reset halt; program $(OUTPUT_BINARY_DIRECTORY)/$(HEX) verify; reset; exit'
+	@echo Flashing: $<
+	nrfjprog --program $< -f nrf52 --sectorerase
+	nrfjprog --reset -f nrf52
+
+# Flash softdevice
+flash_s140:
+	@echo Flashing: $(S140_HEX_FILE)
+	nrfjprog --program $(S140_HEX_FILE) -f nrf52 --sectorerase 
+	nrfjprog --reset -f nrf52
 
 clean:
 	$(RM) $(BUILD_DIRECTORIES)
