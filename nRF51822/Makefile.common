@@ -6,10 +6,10 @@ BIN=$(OUTPUT_FILENAME).bin
 HEX=$(OUTPUT_FILENAME).hex 
 OUT=$(OUTPUT_FILENAME).out                  
 
-GNU_INSTALL_ROOT=$(HOME)/nordic/gcc-arm-none-eabi-5_3-2016q1
+GNU_INSTALL_ROOT=$(HOME)/nordic/gcc-arm-none-eabi-5_3-2016q1/
 GNU_PREFIX=arm-none-eabi
 
-SDK_PATH=$(HOME)/nordic/nRF5_SDK_12.0.0
+SDK_PATH=$(HOME)/nordic/nRF5_SDK_12.2.0
 #SDK_PATH=$(HOME)/nordic/nRF5_SDK_11.0.0
 #SDK_PATH=$(HOME)/nordic/nRF51_SDK_10.0.0
 TEMPLATE_PATH=$(SDK_PATH)/components/toolchain/gcc
@@ -63,6 +63,7 @@ INC_PATHS += -I$(SDK_PATH)/components/ble/ble_services/ble_nus
 INC_PATHS += -I$(SDK_PATH)/components/ble/common
 INC_PATHS += -I$(SDK_PATH)/components/ble/device_manager
 INC_PATHS += -I$(SDK_PATH)/components/ble/peer_manager
+INC_PATHS += -I$(SDK_PATH)/components/boards
 INC_PATHS += -I$(SDK_PATH)/components/device
 INC_PATHS += -I$(SDK_PATH)/components/drivers_ext/segger_rtt
 INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/clock
@@ -86,6 +87,7 @@ INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/uart
 INC_PATHS += -I$(SDK_PATH)/components/libraries/bootloader
 INC_PATHS += -I$(SDK_PATH)/components/libraries/bootloader/ble_dfu
 INC_PATHS += -I$(SDK_PATH)/components/libraries/bootloader/dfu
+INC_PATHS += -I$(SDK_PATH)/components/libraries/bsp
 INC_PATHS += -I$(SDK_PATH)/components/libraries/button
 INC_PATHS += -I$(SDK_PATH)/components/libraries/crc32
 INC_PATHS += -I$(SDK_PATH)/components/libraries/crypto
@@ -170,6 +172,8 @@ vpath %.c $(SDK_PATH)/components/ble/ble_services/ble_nus
 vpath %.c $(SDK_PATH)/components/ble/common
 vpath %.c $(SDK_PATH)/components/ble/device_manager
 vpath %.c $(SDK_PATH)/components/ble/peer_manager
+vpath %.c $(SDK_PATH)/components/libraries/bsp
+vpath %.c $(SDK_PATH)/components/boards
 vpath %.c $(SDK_PATH)/components/device
 vpath %.c $(SDK_PATH)/components/drivers_ext/segger_rtt
 vpath %.c $(SDK_PATH)/components/drivers_nrf/clock
@@ -193,6 +197,7 @@ vpath %.c $(SDK_PATH)/components/drivers_nrf/uart
 vpath %.c $(SDK_PATH)/components/libraries/bootloader
 vpath %.c $(SDK_PATH)/components/libraries/bootloader/ble_dfu
 vpath %.c $(SDK_PATH)/components/libraries/bootloader/dfu
+vpath %.c $(SDK_PATH)/components/libraries/bsp
 vpath %.c $(SDK_PATH)/components/libraries/button
 vpath %.c $(SDK_PATH)/components/libraries/crc32
 vpath %.c $(SDK_PATH)/components/libraries/crypto
